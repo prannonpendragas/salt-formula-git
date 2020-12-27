@@ -8,8 +8,8 @@ git_packages:
 
 {{ server.directory }}:
   file.directory:
-    - user: www-data
-    - group: www-data
+    - user: {{ server.user }}
+    - group: {{ server.group }}
     - dir_mode: 755
     - file_mode: 644
 
@@ -20,9 +20,7 @@ git_packages:
 git_server_{{ repo.name }}:
   git.latest:
     - name: {{ repo.url }}
-    - target: {{ server.directory }}/{{ repo.name }}.git
-    - force_reset: True
-    - mirror: True
+    - target: {{ server.directory }}/{{ repo.name }}
     - require:
         - file: {{ server.directory }}
 
@@ -30,20 +28,12 @@ git_server_{{ repo.name }}:
 
 git_server_{{ repo.name }}:
   git.present:
-    - name: {{ server.directory }}/{{ repo.name }}.git
+    - name: {{ server.directory }}/{{ repo.name }}
     - force: True
-    - bare: True
     - require:
         - file: {{ server.directory }}
 
 {%- endif %}
-
-git_update_server_info_{{ repo.name }}:
-  cmd.run:
-    - name: git update-server-info
-    - cwd: {{ server.directory }}/{{ repo.name }}.git
-    - require:
-        - git: git_server_{{ repo.name }}
 
 {%- endfor %}
 {%- endif %}
