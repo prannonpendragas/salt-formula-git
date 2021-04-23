@@ -13,7 +13,7 @@ git_packages:
     - dir_mode: 755
     - file_mode: 644
 
-{%- for repo in server.get('repos',{}) %}
+{%- for repo|unique in server.get('repos',{}) %}
 
 {%- if repo.url is defined %}
 
